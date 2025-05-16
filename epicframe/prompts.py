@@ -1,4 +1,4 @@
-LLAMA_JSON_PROMPT = """
+CHARACTER_RELATION_PROMPT = """
 Extract every character, all explicit relationships **and** any descriptive traits
 (age, role, personality, skills, etc.) that the text gives about each character.
 Return pure JSON ONLY in this schema:
@@ -12,6 +12,47 @@ Return pure JSON ONLY in this schema:
      {"from":"Alice","to":"Bob","type":"friend"}
   ]
 }
+TEXT:
+%s
+"""
+
+EVENT_EXTRACTION_PROMPT = """
+Extract chronological events from the text.
+Keep event descriptions brief and clear.
+
+Return JSON in this schema:
+{
+  "plots": [
+    {
+      "id": "p1",
+      "event": "Major story event",  # Keep under 6 words
+      "time": "start",
+      "sequence": 1
+    }
+  ],
+  "subplots": [
+    {
+      "from": "p1",
+      "to": "p2",
+      "type": "leads_to",
+      "event": "Brief connecting event",  # Keep under 6 words
+      "sequence": 2
+    }
+  ]
+}
+
+Rules:
+- Use 3-6 words per event description
+- Start with action verbs
+- Use IDs like p1, p2, etc.
+- Mark first/last with time: "start"/"end"
+- Number events sequentially
+
+Examples:
+✓ "Hero finds ancient sword"
+✓ "Castle falls to invaders"
+✓ "Princess escapes through portal"
+
 TEXT:
 %s
 """

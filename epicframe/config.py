@@ -1,14 +1,19 @@
 import os
+
 from dotenv import load_dotenv
 from together import Together
-from huggingface_hub import InferenceClient
 
 load_dotenv()
 
-HF_TOKEN = os.getenv("HF_TOKEN")
-TOGETHER_TOKEN = os.getenv("TOGETHER_API_KEY", "")
 
-together_client = Together(api_key=TOGETHER_TOKEN)
-image_client = InferenceClient(token=HF_TOKEN)
+class Settings:
+    together_client: Together = Together(api_key=os.getenv("TOGETHER_API_KEY"))
+    image_model: str = os.getenv("IMAGE_MODEL", "black-forest-labs/FLUX.1-schnell-Free")
+    text_model: str = os.getenv("TEXT_MODEL", "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free")
 
-__all__ = ["together_client", "image_client"]
+
+def get_settings() -> Settings:
+    return Settings()
+
+
+__all__ = ["Settings"]

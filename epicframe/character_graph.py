@@ -1,12 +1,13 @@
-import tempfile, uuid
 import json
-
-from pathlib import Path
+import tempfile
+import uuid
 from datetime import datetime
+from pathlib import Path
+
 from graphviz import Digraph
 
 
-def graph_png(data: dict) -> str:
+def relations_graph(data: dict) -> str:
     dot = Digraph(format="png")
 
     dot.attr(
@@ -51,13 +52,13 @@ def graph_png(data: dict) -> str:
 def add_character(state, name):
     if name and name not in state["characters"]:
         state["characters"].append(name)
-    return graph_png(state)
+    return relations_graph(state)
 
 
 def add_relation(state, frm, to, typ):
     if frm in state["characters"] and to in state["characters"]:
         state["relations"].append({"from": frm, "to": to, "type": typ or "relation"})
-    return graph_png(state)
+    return relations_graph(state)
 
 
 def delete_character(state, name):
@@ -65,7 +66,7 @@ def delete_character(state, name):
         state["characters"].remove(name)
         state["relations"] = [r for r in state["relations"]
                               if r["from"] != name and r["to"] != name]
-    return graph_png(state)
+    return relations_graph(state)
 
 
 def save(state):

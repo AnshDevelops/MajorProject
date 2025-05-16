@@ -1,8 +1,18 @@
-import base64, requests
+import base64
+import os
 from io import BytesIO
+
+import requests
+from dotenv import load_dotenv
 from PIL import Image
-from .config import together_client
+
+from .config import get_settings
 from .pipeline import scene_prompts, seed
+
+load_dotenv()
+
+settings = get_settings()
+
 
 def generate_images(story: str, style: str, quality: int, n: int):
     prompts = scene_prompts(story, n)
@@ -10,8 +20,8 @@ def generate_images(story: str, style: str, quality: int, n: int):
     for p in prompts:
         full = f"{style} style, cinematic lighting, quality {quality}, {p}"
         try:
-            resp = together_client.images.generate(
-                model="black-forest-labs/FLUX.1-schnell-Free",
+            resp = settings.together_client.images.generate(
+                model=settings.image_model,
                 prompt=full,
                 seed=seed(),
                 width=768,
